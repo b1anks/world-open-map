@@ -2,10 +2,10 @@
 
 A comprehensive open-source platform for visualizing real-time global data on a unified map, including:
 
-- Live flight tracking
-- Satellite positions
-- Public camera locations and feeds
-- Ground sensor data (weather, air quality, seismic)
+- Live flight tracking from OpenSky
+- Satellite positions from the ISS tracking endpoint
+- Public camera metadata and public webcam locations
+- Ground weather sensor data from Open-Meteo
 - Real-time WebSocket updates
 
 ## Features
@@ -13,7 +13,7 @@ A comprehensive open-source platform for visualizing real-time global data on a 
 - Interactive 2D map built with Leaflet
 - FastAPI backend with REST and WebSocket APIs
 - Docker-based local setup
-- Sample and live-ready data adapters
+- Live data adapters with graceful fallbacks to sample data
 - Responsive UI for desktop and mobile
 
 ## Quick start
@@ -60,19 +60,7 @@ npm run dev
 - `GET /api/map/bounds`
 - `WS /ws/live`
 
-## Project structure
+## Notes
 
-```text
-world-open-map/
-├── backend/
-├── frontend/
-├── docker-compose.yml
-└── README.md
-```
-
-## Next steps
-
-- Add real API keys for OpenSky / OpenWeatherMap / WAQI
-- Replace sample markers with live feeds
-- Add filtering by source and time window
-- Expand to 3D globe support with CesiumJS
+- The project now uses live public endpoints where available and falls back to curated sample markers whenever the upstream services are unreachable.
+- If you want to add richer camera or satellite data, you can plug in additional provider APIs or a database-backed catalog.

@@ -32,6 +32,9 @@ function MapView({ items }) {
             Type: {item.type}
             <br />
             Status: {item.status}
+            {item.source ? <><br />Source: {item.source}</> : null}
+            {item.temperature !== undefined ? <><br />Temp: {item.temperature}°C</> : null}
+            {item.humidity !== undefined ? <><br />Humidity: {item.humidity}%</> : null}
           </Popup>
         </Marker>
       ))}
