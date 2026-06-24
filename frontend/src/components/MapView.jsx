@@ -1,5 +1,7 @@
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import L from 'leaflet';
+import Globe from 'react-globe.gl';
+import { useEffect, useMemo, useRef } from 'react';
 
 const iconColors = {
   flight: '#38bdf8',
@@ -17,7 +19,44 @@ function getIcon(color) {
   });
 }
 
-function MapView({ items }) {
+function MapView({ items, viewMode }) {
+  const globeRef = useRef(null);
+
+  useEffect(() => {
+    if (globeRef.current) {
+      const controls = globeRef.current.controls();
+      controls.autoRotate = true;
+      controls.autoRotateSpeed = 0.3;
+    }
+  }, []);
+
+  const globeData = useMemo(() => items.map((item) => ({ ...item, lat: item.lat, lng: item.lng })), [items]);
+
+  if (viewMode === 'globe') {
+    return (
+      <div className="globe-shell">
+        <Globe
+          ref={globeRef}
+          globeImageUrl="https://unpkg.com/three-globe/example/img/earth-night.jpg"
+          backgroundColor="rgba(0,0,0,0)"
+          pointsData={globeData}
+          pointLat="lat"
+          pointLng="lng"
+          pointColor={(item) => iconColors[item.type] || '#ffffff'}
+          pointAltitude={0.01}
+          pointRadius={0.6}
+          labelsData={globeData}
+          labelLat="lat"
+          labelLng="lng"
+          labelText="name"
+          labelSize={0.6}
+          labelDotRadius={0.4}
+          labelColor={() => '#f8fafc'}
+        />
+      </div>
+    );
+  }
+
   return (
     <MapContainer center={[20, 0]} zoom={2} scrollWheelZoom>
       <TileLayer

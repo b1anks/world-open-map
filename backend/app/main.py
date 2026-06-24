@@ -1,9 +1,10 @@
 import asyncio
 import os
 from dotenv import load_dotenv
-from fastapi import FastAPI
+from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.database import init_db
 from app.services.data_service import get_feature_summary, get_features_for_kind, get_live_update, get_map_features
 
 load_dotenv()
@@ -18,6 +19,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+init_db()
 
 
 @app.get("/health")
@@ -51,8 +54,12 @@ def ground_sensors(limit: int = 50) -> list[dict[str, object]]:
 
 
 @app.get("/api/map/bounds")
-def map_bounds() -> list[dict[str, object]]:
-    return get_map_features()
+def map_bounds(
+    marker_type: str | None = None,
+    source: str | None = None,
+    limit: int = Query(200, ge=1, le=500),
+) -> list[dict[str, object]]:
+    return get_map_features(marker_type=marker_type, source=source, limit=limit)
 
 
 @app.websocket("/ws/live")
